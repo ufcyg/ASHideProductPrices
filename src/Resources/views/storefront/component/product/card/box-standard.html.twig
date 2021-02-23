@@ -112,7 +112,7 @@
                             
                             {% set showPrices = false %}
                             {% set break = false %}
-                            {% for customerGroupID in shopware.config.SynlabHideProductPrices.config.allowedCustomerGroups if not break %}
+                            {% for customerGroupID in shopware.config.ASHideProductPrices.config.allowedCustomerGroups if not break %}
                                 {% if (customerGroupID == context.currentCustomerGroup.id) %}
                                     {% set showPrices = true %}
                                     {% set break = true %}
