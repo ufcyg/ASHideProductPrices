@@ -1,0 +1,24 @@
+{
+  "name": "as/hide-product-prices",
+  "description": "Smol plugin to hide prices while not being logged in",
+  "type": "shopware-platform-plugin",
+  "version": "v1.0.0",
+  "license": "proprietary",
+  "authors": [
+    {
+        "name": "SGS IT"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "ASHideProductPrices\\": "src/"
+    }
+  },
+  "extra": {
+    "shopware-plugin-class": "ASHideProductPrices\\ASHideProductPrices",
+    "label": {
+      "de-DE": "Preise verbergen",
+      "en-GB": "Hide prices"
+    }
+  }
+}
