@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace ASHideProductPrices;
 
@@ -43,6 +45,6 @@ class ASHideProductPrices extends Plugin
 
     /** @inheritDoc */
     public function uninstall(UninstallContext $uninstallcontext): void
-    {        
+    {
     }
 }
