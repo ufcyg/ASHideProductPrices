@@ -47,25 +47,38 @@
                 {{ product.translated.description|striptags|raw }}
             </div>
         {% endblock %}
-
-        
+        {% set hidePricesConfig = config('ASHideProductPrices') %}
         {% set showPrices = false %}
         {% set break = false %}
-        {% for customerGroupID in shopware.config.ASHideProductPrices.config.allowedCustomerGroups if not break %}
-            {% if (customerGroupID == context.currentCustomerGroup.id) %}
-                {% set showPrices = true %}
-                {% set break = true %}
+        {% for customerGroupID in hidePricesConfig.config.allowedCustomerGroups %}
+            {% if not break %}
+                {% if (customerGroupID == context.currentCustomerGroup.id) %}
+                    {% set showPrices = true %}
+                    {% set break = true %}
+                {% endif %}
             {% endif %}
         {% endfor %}
         
-        {% if showPrices %}  
-            {% block component_product_box_price %}
+         
+            
+        {% block component_product_box_price %}
+            {% if hidePricesConfig.config.active %}  
+                {% if showPrices %}  
+                    {% sw_include '@Storefront/storefront/component/product/card/price-unit.html.twig' %}
+                {% endif %}
+            {% else %}
                 {% sw_include '@Storefront/storefront/component/product/card/price-unit.html.twig' %}
-            {% endblock %}
-        
-            {% block component_product_box_action %}
+            {% endif %}
+        {% endblock %}
+    
+        {% block component_product_box_action %}
+            {% if hidePricesConfig.config.active %}  
+                {% if showPrices %}  
+                    {% sw_include '@Storefront/storefront/component/product/card/action.html.twig' %}
+                {% endif %}
+            {% else %}
                 {% sw_include '@Storefront/storefront/component/product/card/action.html.twig' %}
-            {% endblock %}
-        {% endif %}
+            {% endif %}
+        {% endblock %}
     </div>
 {% endblock %}

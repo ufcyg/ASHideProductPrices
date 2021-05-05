@@ -60,78 +60,53 @@
             {#TODO: NEXT-2784 - product not available message#}
         {% endblock %}
 
-
+        {% set hidePricesConfig = config('ASHideProductPrices') %}
         {% set showPrices = false %}
         {% set break = false %}
-        {% for customerGroupID in shopware.config.ASHideProductPrices.config.allowedCustomerGroups if not break %}
-            {% if (customerGroupID == context.currentCustomerGroup.id) %}
-                {% set showPrices = true %}
-                {% set break = true %}
+        {% for customerGroupID in hidePricesConfig.config.allowedCustomerGroups %}
+            {% if not break %}
+                {% if (customerGroupID == context.currentCustomerGroup.id) %}
+                    {% set showPrices = true %}
+                    {% set break = true %}
+                {% endif %}
             {% endif %}
         {% endfor %}
         
-        {% if showPrices %} 
         {% block page_product_detail_buy_container %}
             <div itemprop="offers"
                  itemscope
                  itemtype="{% if page.product.calculatedPrices|length > 1 %}http://schema.org/AggregateOffer{% else %}http://schema.org/Offer{% endif %}">
                 {% block page_product_detail_data %}
                     {% block page_product_detail_data_rich_snippet_url %}
-                        <meta itemprop="url"
-                              content="{{ seoUrl('frontend.detail.page', { productId: page.product.id }) }}"/>
+                        {{ parent() }}
                     {% endblock %}
 
                     {% block page_product_detail_data_rich_snippet_price_range %}
-                        {% if page.product.calculatedPrices|length > 1 %}
-                            {% set lowestPrice = false %}
-                            {% set highestPrice = false %}
-
-                            {% for price in page.product.calculatedPrices %}
-                                {% if not lowestPrice or price.unitPrice < lowestPrice %}
-                                    {% set lowestPrice = price.unitPrice %}
-                                {% endif %}
-                                {% if not highestPrice or price.unitPrice > highestPrice %}
-                                    {% set highestPrice = price.unitPrice %}
-                                {% endif %}
-                            {% endfor %}
-
-                            <meta itemprop="lowPrice" content="{{ lowestPrice }}"/>
-                            <meta itemprop="highPrice" content="{{ highestPrice }}"/>
-                            <meta itemprop="offerCount" content="{{ page.product.calculatedPrices|length }}"/>
-                        {% endif %}
+                        {{ parent() }}
                     {% endblock %}
 
                     {% block page_product_detail_data_rich_snippet_price_currency %}
-                        <meta itemprop="priceCurrency"
-                              content="{{ context.currency.translated.shortName }}"/>
+                        {{ parent() }}
                     {% endblock %}
 
                     {% block page_product_detail_price %}
-                        <div class="product-detail-price-container">
-                            {% sw_include '@Storefront/storefront/page/product-detail/buy-widget-price.html.twig' %}
-                        </div>
+                        {% if hidePricesConfig.config.active %}  
+                            {% if showPrices %} 
+                                {{ parent() }}
+                            {% endif %}
+                        {% else %}
+                            {{ parent() }}
+                        {% endif %}
                     {% endblock %}
 
                     {% block page_product_detail_tax %}
-                        <div class="product-detail-tax-container">
-                            {% if context.taxState == "gross" %}
-                                {% set taxText = "general.grossTaxInformation"|trans|sw_sanitize %}
-                            {% else %}
-                                {% set taxText = "general.netTaxInformation"|trans|sw_sanitize %}
+                        {% if hidePricesConfig.config.active %}  
+                            {% if showPrices %} 
+                                {{ parent() }}
                             {% endif %}
-
-                            <p class="product-detail-tax">
-                                {% block page_product_detail_tax_link %}
-                                    <a class="product-detail-tax-link"
-                                       href="{{ path('frontend.cms.page',{ id: shopware.config.core.basicInformation.shippingPaymentInfoPage }) }}"
-                                       title="{{ taxText }}"
-                                       data-toggle="modal"
-                                       data-url="{{ path('frontend.cms.page',{ id: shopware.config.core.basicInformation.shippingPaymentInfoPage }) }}">
-                                        {{ taxText }}
-                                    </a>
-                                {% endblock %}
-                            </p>
-                        </div>
+                        {% else %}
+                            {{ parent() }}
+                        {% endif %}
                     {% endblock %}
 
                     {% set remoteClickOptions = {
@@ -140,71 +115,38 @@
                     } %}
 
                     {% block page_product_detail_reviews %}
-                        {% if page.product.ratingAverage > 0 and shopware.config.core.listing.showReview %}
-                            <p class="product-detail-reviews">
-                                {% sw_include '@Storefront/storefront/component/review/rating.html.twig' with {
-                                    points: page.product.ratingAverage,
-                                    style: 'text-primary'
-                                } %}
-                                <a data-toggle="tab"
-                                   class="product-detail-reviews-link"
-                                   data-offcanvas-tabs="true"
-                                   data-remote-click="true"
-                                   data-remote-click-options='{{ remoteClickOptions|json_encode }}'
-                                   href="#review-tab-pane"
-                                   aria-controls="review-tab-pane">
-                                    {{ page.reviews.totalReviews }}
-                                    {{ "detail.reviewLinkText"|trans({'%count%': page.reviews.totalReviews})|sw_sanitize }}
-                                </a>
-                            </p>
-                        {% endif %}
+                        {{ parent() }}
                     {% endblock %}
 
                     {% block page_product_detail_delivery_informations %}
-                        <div class="product-detail-delivery-information">
-                            {% sw_include '@Storefront/storefront/component/delivery-information.html.twig' %}
-                        </div>
+                        {{ parent() }}
                     {% endblock %}
                 {% endblock %}
 
                 {% block page_product_detail_configurator_include %}
-                    {% if page.product.parentId and page.configuratorSettings|length > 0 %}
-                        <div class="product-detail-configurator-container">
-                            {% sw_include '@Storefront/storefront/page/product-detail/configurator.html.twig' %}
-                        </div>
+                    {% if hidePricesConfig.config.active %}  
+                        {% if showPrices %} 
+                            {{ parent() }}
+                        {% endif %}
+                    {% else %}
+                            {{ parent() }}
                     {% endif %}
                 {% endblock %}
 
                 {% block page_product_detail_buy_form %}
-                    {% if page.product.active %}
-                        <div class="product-detail-form-container">
-                            {% sw_include '@Storefront/storefront/page/product-detail/buy-widget-form.html.twig' %}
-                        </div>
+                    {% if hidePricesConfig.config.active %}  
+                        {% if showPrices %} 
+                            {{ parent() }}
+                        {% endif %}
+                    {% else %}
+                            {{ parent() }}
                     {% endif %}
                 {% endblock %}
             </div>
         {% endblock %}
-        {% endif %}
 
         {% block page_product_detail_ordernumber_container %}
-            {% if page.product.productNumber %}
-                <div class="product-detail-ordernumber-container">
-                    {% block page_product_detail_ordernumber_label %}
-                        <span class="product-detail-ordernumber-label">
-                            {{ "detail.productNumberLabel"|trans|sw_sanitize }}
-                        </span>
-                    {% endblock %}
-
-                    {% block page_product_detail_ordernumber %}
-                        <meta itemprop="productID"
-                              content="{{ page.product.id }}"/>
-                        <span class="product-detail-ordernumber"
-                              itemprop="sku">
-                            {{ page.product.productNumber }}
-                        </span>
-                    {% endblock %}
-                </div>
-            {% endif %}
+            {{ parent() }}
         {% endblock %}
     </div>
 {% endblock %}
