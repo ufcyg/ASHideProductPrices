@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ASHideProductPrices;
 
+use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
@@ -46,5 +47,18 @@ class ASHideProductPrices extends Plugin
     /** @inheritDoc */
     public function uninstall(UninstallContext $uninstallcontext): void
     {
+        if ($uninstallcontext->keepUserData()) {
+            parent::uninstall($uninstallcontext);
+
+            return;
+        }
+
+        $connection = $this->container->get(Connection::class);
+
+        $connection->executeUpdate('DROP TABLE IF EXISTS `as_product_bundle_mapping`');
+        $connection->executeUpdate('ALTER TABLE `product` DROP COLUMN `customergroups`');
+        $connection->executeUpdate('ALTER TABLE `customer` DROP COLUMN `products`');
+
+        parent::uninstall($uninstallcontext);
     }
 }
