@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace ASHideProductPrices\Subscriber;
 
+use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Content\Product\Events\ProductListingCollectFilterEvent;
 use Shopware\Core\Content\Product\SalesChannel\Listing\Filter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Bucket\FilterAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\MaxAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\ContainsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -34,6 +36,12 @@ class ProductListingSubscriber implements EventSubscriberInterface
 
     public function addFilter(ProductListingCollectFilterEvent $event): void
     {
+        //fetch customer group
+        /** @var SalesChannelContext $context */
+        $context = $event->getSalesChannelContext();
+        /** @var CustomerEntity $customerEntity */
+        $customerEntity = $context->getCustomer();
+        $customerGroupId = $customerEntity->getGroupId();
         // fetch existing filters
         $filters = $event->getFilters();
         $request = $event->getRequest();
@@ -42,7 +50,7 @@ class ProductListingSubscriber implements EventSubscriberInterface
 
         $filter = new Filter(
         // unique name of the filter
-            'isCloseout',
+            'isAvailable',
 
             // defines if this filter is active
             true,
@@ -56,7 +64,7 @@ class ProductListingSubscriber implements EventSubscriberInterface
                 ),
             ],
 
-
+            // new ContainsFilter('product.customergroups', $customerGroupId)
             // defines the DAL filter which should be added to the criteria
             new EqualsFilter('product.isCloseout', false),
 

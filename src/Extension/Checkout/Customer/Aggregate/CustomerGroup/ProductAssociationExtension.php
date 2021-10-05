@@ -38,13 +38,13 @@ class ProductAssociationExtension extends EntityExtension{
             //                              'product_id', /** referenceField the column in the other database table which shall be linked */ 
             //                              ProductBundleExtensionDefinition::class /** The class name of the definition that we want to connect via the association */, 
             //                              true /** autoload */)
-            (new ManyToManyAssociationField(
+            new ManyToManyAssociationField(
                 'products', /** name of the property in your entity, that will contain the associated entities */
                 ProductDefinition::class, /** class of the associated definition */
                 ProductCustomergroupMappingDefinition::class, /** class of the mapping definition */
-                'customer_id', /** name of the id column for the current entity */
-                'customer_id' /** name of the id column for the referenced entity */ //caution!!
-            ))->addFlags(new Inherited())            
+                'customer_group_id', /** name of the id column for the current entity */
+                'product_id' /** name of the id column for the referenced entity */
+            ),         
         );
     }
 

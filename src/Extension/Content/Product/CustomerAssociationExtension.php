@@ -43,7 +43,7 @@ class CustomerAssociationExtension extends EntityExtension{
                 CustomerGroupDefinition::class, /** class of the associated definition */
                 ProductCustomergroupMappingDefinition::class, /** class of the mapping definition */
                 'product_id', /** name of the id column for the current entity */
-                'product_id' /** name of the id column for the referenced entity */ //caution!!
+                'customer_group_id' /** name of the id column for the referenced entity */ //caution!!
             ))->addFlags(new Inherited())            
         );
     }
