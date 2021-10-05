@@ -34,8 +34,8 @@ class ProductCustomergroupMappingDefinition extends MappingEntityDefinition
     protected function defineFields(): FieldCollection
     {
         return new FieldCollection([
-            (new FkField('customergroup_id', /** name of the column in the database */
-                         'customergroupId', /** the property name in the definition class */
+            (new FkField('customer_group_id', /** name of the column in the database */
+                         'customerGroupId', /** the property name in the definition class */
                          CustomerGroupDefinition::class /** respective definition class */
                          ))->addFlags(new PrimaryKey(), new Required()),
             (new FkField('product_id', /** name of the column in the database */
@@ -44,7 +44,7 @@ class ProductCustomergroupMappingDefinition extends MappingEntityDefinition
                          ))->addFlags(new PrimaryKey(), new Required()),
             (new ReferenceVersionField(ProductDefinition::class))->addFlags(new PrimaryKey(), new Required()),
             new ManyToOneAssociationField('customergroups', /** name of the property in your entity, which should contain the entries */
-                                          'customergroup_id', /** name of the column in the database */
+                                          'customer_group_id', /** name of the column in the database */
                                           CustomerGroupDefinition::class, /** respective definition class */
                                           'id'),
             new ManyToOneAssociationField('products', /** name of the property in your entity, which should contain the entries */

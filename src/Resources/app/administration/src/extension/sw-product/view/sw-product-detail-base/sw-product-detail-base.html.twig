@@ -1,0 +1,28 @@
+{% block sw_product_detail_attribute_sets %}
+    {% parent() %}
+    {# TODO: add a card for the customergroups #}
+    <sw-card :title="$t('sw-product.detail.customerGroupCardLabel')"
+             :isLoading="isLoading">
+        {# TODO: add an 'entity-many-to-many' select for the customergroups, which is wrapped in an 'inherit-wrapper' https://component-library.shopware.com/components/sw-inherit-wrapper #}
+        <sw-inherit-wrapper v-if="!isLoading"
+                            v-model="product.extensions.customergroups"
+                            :inheritedValue="parentProduct.extensions ? parentProduct.extensions.customergroups : null"
+                            :hasParent="!!parentProduct.id"
+                            :label="$t('sw-product.detail.customerGroupSelectLabel')"
+                            isAssociation
+                            @inheritance-remove="saveProduct"
+                            @inheritance-restore="saveProduct">
+            <template #content="{ currentValue, isInherited, updateCurrentValue }">
+                <sw-entity-many-to-many-select {# https://component-library.shopware.com/components/sw-entity-many-to-many-select #}
+                    :localMode="product.isNew()"
+                    :entityCollection="currentValue"
+                    @input="updateCurrentValue"
+                    labelProperty="name"
+                    :disabled="isInherited"
+                    :key="isInherited"
+                    :placeholder="$t('sw-product.detail.customerGroupSelectPlaceholder')">
+                </sw-entity-many-to-many-select>
+            </template>
+        </sw-inherit-wrapper>
+    </sw-card>
+{% endblock %}

@@ -56,7 +56,7 @@ class ASHideProductPrices extends Plugin
         $connection = $this->container->get(Connection::class);
 
         $connection->executeUpdate('DROP TABLE IF EXISTS `as_product_customergroup_mapping`');
-        //$connection->executeUpdate('ALTER TABLE `product` DROP COLUMN `customergroups`');
+        $connection->executeUpdate('ALTER TABLE `product` DROP COLUMN `customergroups`');
         //$connection->executeUpdate('ALTER TABLE `customer_group` DROP COLUMN `products`');
 
         parent::uninstall($uninstallcontext);
