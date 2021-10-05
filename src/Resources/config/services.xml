@@ -14,7 +14,7 @@
         <service id="ASHideProductPrices\Extension\Content\Product\CustomerAssociationExtension">
             <tag name="shopware.entity.extension"/>
         </service>
-        <service id="ASHideProductPrices\Extension\Checkout\Customer\ProductAssociationExtension">
+        <service id="ASHideProductPrices\Extension\Checkout\Customer\Aggregate\CustomerGroup\ProductAssociationExtension">
             <tag name="shopware.entity.extension"/>
         </service>
     </services>
