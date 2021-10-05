@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace ASHideProductPrices\Extension\Checkout\Customer\Aggregate\CustomerGroup;
+namespace ASHideProductPrices\Extension\Checkout\Customer;
 
 use ASHideProductPrices\Core\Content\ProductCustomergroupMappingDefinition;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinition;
@@ -27,6 +27,7 @@ class ProductAssociationExtension extends EntityExtension{
      */
     public function extendFields(FieldCollection $collection): void
     {
+        CustomerGroupDefinition::
         $collection->add(
             /**
              * Since you must not extend the product table with a new column, 
@@ -42,9 +43,9 @@ class ProductAssociationExtension extends EntityExtension{
                 'products', /** name of the property in your entity, that will contain the associated entities */
                 ProductDefinition::class, /** class of the associated definition */
                 ProductCustomergroupMappingDefinition::class, /** class of the mapping definition */
-                'customer_group_id', /** name of the id column for the current entity */
-                'customer_group_id' /** name of the id column for the referenced entity */ //caution!!
-            ))->addFlags(new Inherited())
+                'customer_id', /** name of the id column for the current entity */
+                'customer_id' /** name of the id column for the referenced entity */ //caution!!
+            ))->addFlags(new Inherited())            
         );
     }
 
