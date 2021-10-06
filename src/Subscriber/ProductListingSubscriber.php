@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace ASHideProductPrices\Subscriber;
 
+use Psr\Container\ContainerInterface;
+use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupCollection;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Content\Product\Events\ProductListingCollectFilterEvent;
+use Shopware\Core\Content\Product\ProductEntity;
 use Shopware\Core\Content\Product\SalesChannel\Listing\Filter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Bucket\FilterAggregation;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\MaxAggregation;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\ContainsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
@@ -19,11 +23,25 @@ class ProductListingSubscriber implements EventSubscriberInterface
 {
     /** @var SystemConfigService $systemConfigService */
     private SystemConfigService $systemConfigService;
+    /** @var ContainerInterface $container */
+    protected $container;
 
     public function __construct(
         SystemConfigService $systemConfigService
     ) {
         $this->systemConfigService = $systemConfigService;
+    }
+
+    /**
+     * @internal
+     * @required
+     */
+    public function setContainer(ContainerInterface $container): ?ContainerInterface
+    {
+        $previous = $this->container;
+        $this->container = $container;
+
+        return $previous;
     }
 
     // register event
@@ -36,19 +54,79 @@ class ProductListingSubscriber implements EventSubscriberInterface
 
     public function addFilter(ProductListingCollectFilterEvent $event): void
     {
-        //fetch customer group
+
+        // fetch existing filters
+        $filters = $event->getFilters();
+        //fetch customer
         /** @var SalesChannelContext $context */
         $context = $event->getSalesChannelContext();
         /** @var CustomerEntity $customerEntity */
         $customerEntity = $context->getCustomer();
-        $customerGroupId = $customerEntity->getGroupId();
-        // fetch existing filters
-        $filters = $event->getFilters();
-        $request = $event->getRequest();
-        //new ContainsFilter();
-        $filtered = (bool) $request->get('isCloseout');
+        if($customerEntity == null) {
+            //not logged in -> display NO item
+            $filter = $this->noDisplayFilter();
+        }
+        else{
+            //fetch customer group id
+            $customerGroupId = $customerEntity->getGroupId();
 
-        $filter = new Filter(
+            // get involved repositories / DB tables
+            /** @var EntityRepositoryInterface productRepository */
+            $productRepository = $this->container->get('product.repository');
+            //fetch ALL products with their customergroups association
+            $criteria = new Criteria();
+            $criteria->addAssociation('customergroups');
+            /** @var EntitySearchResult $result */
+            $result = $productRepository->search($criteria, $context->getContext());
+
+            // iterate through search result and check if the product is associated with the customer group
+            /**
+             * @var string $productId
+             * @var ProductEntity $product
+             * @var array $shownProductIds
+             */
+            $shownProductIds = null;
+            foreach ($result as $productId => $product){
+                /** @var CustomerGroupCollection $customergroupsExtension */
+                $customergroupsExtension = $product->getExtension('customergroups');
+                foreach($customergroupsExtension as $thisCustomergroupId => $customerGroup){
+                    if($thisCustomergroupId == $customerGroupId){
+                        // this product should be shown, add to array
+                        $shownProductIds[] = $productId;
+                    }
+                }
+            }
+
+            if($shownProductIds == null){
+                // customergroup is not assigned to any products
+                $filter = $this->noDisplayFilter();
+            }
+            else{ // this is what we want, filter for and display all associated products
+                $filter = new Filter(
+                // unique name of the filter
+                    'isAvailable',
+
+                    // defines if this filter is active
+                    true,
+
+                    // Defines aggregations behind a filter. A filter can contain multiple aggregations like properties
+                    [],
+
+                    // defines the DAL filter which should be added to the criteria
+                    new EqualsAnyFilter('id', $shownProductIds),
+
+                    // defines the values which will be added as currentFilter to the result
+                    true
+                );
+            }
+        }
+
+        // Add your custom filter
+        $filters->add($filter);
+    }
+
+    private function noDisplayFilter(): Filter{
+        return $filter = new Filter(
         // unique name of the filter
             'isAvailable',
 
@@ -56,23 +134,14 @@ class ProductListingSubscriber implements EventSubscriberInterface
             true,
 
             // Defines aggregations behind a filter. A filter can contain multiple aggregations like properties
-            [
-                new FilterAggregation(
-                    'active-filter',
-                    new MaxAggregation('active', 'product.isCloseout'),
-                    [new EqualsFilter('product.isCloseout', true)]
-                ),
-            ],
+            [],
 
             // new ContainsFilter('product.customergroups', $customerGroupId)
             // defines the DAL filter which should be added to the criteria
-            new EqualsFilter('product.isCloseout', false),
+            new EqualsFilter('id', 'cfbd5018d38d41d8adca10d94fc8bdd6'), // this is the ID for the Standard-Kundengruppe which will be the same in every shopware installation and therefor cannot be a product ID
 
             // defines the values which will be added as currentFilter to the result
-            $filtered
+            false
         );
-
-        // Add your custom filter
-        $filters->add($filter);
     }
 }

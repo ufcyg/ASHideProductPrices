@@ -9,6 +9,9 @@
             <tag name="kernel.event_subscriber"/>
             <tag name="shopware.event_subscriber"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
         </service>
 
         <service id="ASHideProductPrices\Core\Content\ProductCustomergroupMappingDefinition">
