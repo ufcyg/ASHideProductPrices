@@ -134,13 +134,14 @@
                 {% endblock %}
 
                 {% block page_product_detail_buy_form %}
-                    {% if hidePricesConfig.config.active %}  
+                    {{ parent() }}
+                    {# {% if hidePricesConfig.config.active %}
                         {% if showPrices %} 
                             {{ parent() }}
                         {% endif %}
                     {% else %}
                             {{ parent() }}
-                    {% endif %}
+                    {% endif %}#}
                 {% endblock %}
             </div>
         {% endblock %}

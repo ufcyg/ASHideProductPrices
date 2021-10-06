@@ -2,7 +2,7 @@
   "name": "as/hide-product-prices",
   "description": "Smol plugin to hide prices while not being logged in",
   "type": "shopware-platform-plugin",
-  "version": "v1.1.0",
+  "version": "v2.0.0",
   "license": "proprietary",
   "authors": [
     {

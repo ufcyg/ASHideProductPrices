@@ -70,15 +70,16 @@
                 {% sw_include '@Storefront/storefront/component/product/card/price-unit.html.twig' %}
             {% endif %}
         {% endblock %}
-    
-        {% block component_product_box_action %}
-            {% if hidePricesConfig.config.active %}  
+
+       {% block component_product_box_action %}
+           {% sw_include '@Storefront/storefront/component/product/card/action.html.twig' %}
+            {# {% if hidePricesConfig.config.active %}
                 {% if showPrices %}  
                     {% sw_include '@Storefront/storefront/component/product/card/action.html.twig' %}
                 {% endif %}
             {% else %}
                 {% sw_include '@Storefront/storefront/component/product/card/action.html.twig' %}
-            {% endif %}
+            {% endif %}#}
         {% endblock %}
     </div>
 {% endblock %}
