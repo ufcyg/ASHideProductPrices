@@ -1,0 +1,35 @@
+{% sw_extends '@Storefront/storefront/page/checkout/cart/index.html.twig' %}
+
+{% block page_checkout_cart_shipping_costs %}
+    {% set hidePricesConfig = config('ASHideProductPrices') %}
+    {% set showPrices = false %}
+    {% set break = false %}
+    {% for customerGroupID in hidePricesConfig.config.allowedCustomerGroups %}
+        {% if not break %}
+            {% if (customerGroupID == context.currentCustomerGroup.id) %}
+                {% set showPrices = true %}
+                {% set break = true %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    {% if hidePricesConfig.config.active %}
+        {% if showPrices %}
+            {{ parent() }}
+        {% endif %}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block page_checkout_aside_actions %}
+    {% block page_checkout_cart_action_proceed %}
+        <div class="checkout-aside-action">
+            <a href="{{ path('frontend.checkout.confirm.page') }}"
+               class="btn btn-primary btn-block btn-lg begin-checkout-btn"
+               title="{{ "checkout.proceedLink"|trans|striptags }}">
+                {{ "checkout.proceedLink"|trans|sw_sanitize }}
+            </a>
+        </div>
+    {% endblock %}
+{% endblock %}

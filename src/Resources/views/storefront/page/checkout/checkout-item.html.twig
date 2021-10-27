@@ -1,0 +1,45 @@
+{% sw_extends '@Storefront/storefront/page/checkout/checkout-item.html.twig' %}
+
+{% block page_checkout_item_unit_price %}
+    {% set hidePricesConfig = config('ASHideProductPrices') %}
+    {% set showPrices = false %}
+    {% set break = false %}
+    {% for customerGroupID in hidePricesConfig.config.allowedCustomerGroups %}
+        {% if not break %}
+            {% if (customerGroupID == context.currentCustomerGroup.id) %}
+                {% set showPrices = true %}
+                {% set break = true %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    {% if hidePricesConfig.config.active %}
+        {% if showPrices %}
+            {{ parent() }}
+        {% endif %}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block page_checkout_item_total_price %}
+    {% set hidePricesConfig = config('ASHideProductPrices') %}
+    {% set showPrices = false %}
+    {% set break = false %}
+    {% for customerGroupID in hidePricesConfig.config.allowedCustomerGroups %}
+        {% if not break %}
+            {% if (customerGroupID == context.currentCustomerGroup.id) %}
+                {% set showPrices = true %}
+                {% set break = true %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    {% if hidePricesConfig.config.active %}
+        {% if showPrices %}
+            {{ parent() }}
+        {% endif %}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}

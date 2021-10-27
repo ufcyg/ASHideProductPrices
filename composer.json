@@ -1,8 +1,8 @@
 {
   "name": "as/hide-product-prices",
-  "description": "Smol plugin to hide prices while not being logged in",
+  "description": "Show prices to specific customer groups",
   "type": "shopware-platform-plugin",
-  "version": "v2.0.0",
+  "version": "v3.0.0",
   "license": "proprietary",
   "authors": [
     {

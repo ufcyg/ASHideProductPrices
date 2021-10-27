@@ -1,0 +1,34 @@
+{% sw_extends '@Storefront/storefront/layout/header/actions/cart-widget.html.twig' %}
+
+{% block layout_header_actions_cart_widget %}
+    <span class="header-cart-icon">
+        {% sw_icon 'bag' %}
+    </span>
+    {% if page.cart.lineItems|length > 0 %}
+        <span class="badge badge-primary header-cart-badge"></span>
+        {{ page.cart.lineItems|length }}
+    {% endif %}
+    {% set hidePricesConfig = config('ASHideProductPrices') %}
+    {% set showPrices = false %}
+    {% set break = false %}
+    {% for customerGroupID in hidePricesConfig.config.allowedCustomerGroups %}
+        {% if not break %}
+            {% if (customerGroupID == context.currentCustomerGroup.id) %}
+                {% set showPrices = true %}
+                {% set break = true %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    {% if hidePricesConfig.config.active %}
+        {% if showPrices %}
+            <span class="header-cart-total">
+                {{ page.cart.price.positionPrice|currency }}{{ "general.star"|trans|sw_sanitize }}
+            </span>
+        {% endif %}
+    {% else %}
+        <span class="header-cart-total">
+            {{ page.cart.price.positionPrice|currency }}{{ "general.star"|trans|sw_sanitize }}
+        </span>
+    {% endif %}
+{% endblock %}
