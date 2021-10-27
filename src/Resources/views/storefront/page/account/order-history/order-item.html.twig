@@ -1,0 +1,133 @@
+{% sw_extends '@Storefront/storefront/page/account/order-history/order-item.html.twig' %}
+
+{% block page_account_order_item_order_table_body_cell_payment_status %}
+    {% set hidePricesConfig = config('ASHideProductPrices') %}
+    {% set showPrices = false %}
+    {% set break = false %}
+    {% for customerGroupID in hidePricesConfig.config.allowedCustomerGroups %}
+        {% if not break %}
+            {% if (customerGroupID == context.currentCustomerGroup.id) %}
+                {% set showPrices = true %}
+                {% set break = true %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    {% if hidePricesConfig.config.active %}
+        {% if showPrices %}
+            {{ parent() }}
+        {% endif %}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block page_account_order_item_order_table_body_cell_payment_method %}
+    {% set hidePricesConfig = config('ASHideProductPrices') %}
+    {% set showPrices = false %}
+    {% set break = false %}
+    {% for customerGroupID in hidePricesConfig.config.allowedCustomerGroups %}
+        {% if not break %}
+            {% if (customerGroupID == context.currentCustomerGroup.id) %}
+                {% set showPrices = true %}
+                {% set break = true %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    {% if hidePricesConfig.config.active %}
+        {% if showPrices %}
+            {{ parent() }}
+        {% endif %}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block page_account_order_item_order_table_body_cell_shipping_method %}
+    {% set hidePricesConfig = config('ASHideProductPrices') %}
+    {% set showPrices = false %}
+    {% set break = false %}
+    {% for customerGroupID in hidePricesConfig.config.allowedCustomerGroups %}
+        {% if not break %}
+            {% if (customerGroupID == context.currentCustomerGroup.id) %}
+                {% set showPrices = true %}
+                {% set break = true %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    {% if hidePricesConfig.config.active %}
+        {% if showPrices %}
+            {{ parent() }}
+        {% endif %}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block page_account_order_item_order_table_header_cell_payment_status %}
+    {% set hidePricesConfig = config('ASHideProductPrices') %}
+    {% set showPrices = false %}
+    {% set break = false %}
+    {% for customerGroupID in hidePricesConfig.config.allowedCustomerGroups %}
+        {% if not break %}
+            {% if (customerGroupID == context.currentCustomerGroup.id) %}
+                {% set showPrices = true %}
+                {% set break = true %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    {% if hidePricesConfig.config.active %}
+        {% if showPrices %}
+            {{ parent() }}
+        {% endif %}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block page_account_order_item_order_table_header_cell_payment_method %}
+    {% set hidePricesConfig = config('ASHideProductPrices') %}
+    {% set showPrices = false %}
+    {% set break = false %}
+    {% for customerGroupID in hidePricesConfig.config.allowedCustomerGroups %}
+        {% if not break %}
+            {% if (customerGroupID == context.currentCustomerGroup.id) %}
+                {% set showPrices = true %}
+                {% set break = true %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    {% if hidePricesConfig.config.active %}
+        {% if showPrices %}
+            {{ parent() }}
+        {% endif %}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block page_account_order_item_order_table_header_cell_shipping_method %}
+    {% set hidePricesConfig = config('ASHideProductPrices') %}
+    {% set showPrices = false %}
+    {% set break = false %}
+    {% for customerGroupID in hidePricesConfig.config.allowedCustomerGroups %}
+        {% if not break %}
+            {% if (customerGroupID == context.currentCustomerGroup.id) %}
+                {% set showPrices = true %}
+                {% set break = true %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    {% if hidePricesConfig.config.active %}
+        {% if showPrices %}
+            {{ parent() }}
+        {% endif %}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
