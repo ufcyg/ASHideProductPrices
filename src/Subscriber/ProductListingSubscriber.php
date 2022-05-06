@@ -62,11 +62,10 @@ class ProductListingSubscriber implements EventSubscriberInterface
         $context = $event->getSalesChannelContext();
         /** @var CustomerEntity $customerEntity */
         $customerEntity = $context->getCustomer();
-        if($customerEntity == null) {
+        if ($customerEntity == null) {
             //not logged in -> display NO item
             $filter = $this->noDisplayFilter();
-        }
-        else{
+        } else {
             //fetch customer group id
             $customerGroupId = $customerEntity->getGroupId();
 
@@ -86,24 +85,26 @@ class ProductListingSubscriber implements EventSubscriberInterface
              * @var array $shownProductIds
              */
             $shownProductIds = null;
-            foreach ($result as $productId => $product){
+            /** @var ProductEntity $product */
+            foreach ($result as $productId => $product) {
                 /** @var CustomerGroupCollection $customergroupsExtension */
                 $customergroupsExtension = $product->getExtension('customergroups');
-                foreach($customergroupsExtension as $thisCustomergroupId => $customerGroup){
-                    if($thisCustomergroupId == $customerGroupId){
-                        // this product should be shown, add to array
-                        $shownProductIds[] = $productId;
+                foreach ($customergroupsExtension as $thisCustomergroupId => $customerGroup) {
+                    if ($thisCustomergroupId == $customerGroupId) {
+                        if (!str_contains($product->getName(), 'Probenahmeset:')) {
+                            // this product should be shown, add to array
+                            $shownProductIds[] = $productId;
+                        }
                     }
                 }
             }
 
-            if($shownProductIds == null){
+            if ($shownProductIds == null) {
                 // customergroup is not assigned to any products
                 $filter = $this->noDisplayFilter();
-            }
-            else{ // this is what we want, filter for and display all associated products
+            } else { // this is what we want, filter for and display all associated products
                 $filter = new Filter(
-                // unique name of the filter
+                    // unique name of the filter
                     'isAvailable',
 
                     // defines if this filter is active
@@ -125,9 +126,10 @@ class ProductListingSubscriber implements EventSubscriberInterface
         $filters->add($filter);
     }
 
-    private function noDisplayFilter(): Filter{
+    private function noDisplayFilter(): Filter
+    {
         return $filter = new Filter(
-        // unique name of the filter
+            // unique name of the filter
             'isAvailable',
 
             // defines if this filter is active

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace ASHideProductPrices\Extension\Checkout\Customer\Aggregate\CustomerGroup;
 
@@ -9,6 +11,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityExtension;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Inherited;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToManyAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
+
 /**
  * 
  * https://developer.shopware.com/docs/guides/plugins/plugins/framework/data-handling/add-complex-data-to-existing-entities
@@ -20,7 +23,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
  * It has to point to the entity definition you want to extend, so ProductDefinition in this case. 
  *
  */
-class ProductAssociationExtension extends EntityExtension{
+class ProductAssociationExtension extends EntityExtension
+{
 
     /**
      * add new fields by overriding the method extendFields and add your new fields in there
@@ -39,12 +43,17 @@ class ProductAssociationExtension extends EntityExtension{
             //                              ProductBundleExtensionDefinition::class /** The class name of the definition that we want to connect via the association */, 
             //                              true /** autoload */)
             new ManyToManyAssociationField(
-                'products', /** name of the property in your entity, that will contain the associated entities */
-                ProductDefinition::class, /** class of the associated definition */
-                ProductCustomergroupMappingDefinition::class, /** class of the mapping definition */
-                'customer_group_id', /** name of the id column for the current entity */
-                'product_id' /** name of the id column for the referenced entity */
-            ),         
+                'products',
+                /** name of the property in your entity, that will contain the associated entities */
+                ProductDefinition::class,
+                /** class of the associated definition */
+                ProductCustomergroupMappingDefinition::class,
+                /** class of the mapping definition */
+                'customer_group_id',
+                /** name of the id column for the current entity */
+                'product_id'
+                /** name of the id column for the referenced entity */
+            ),
         );
     }
 
