@@ -1,0 +1,20 @@
+{% sw_extends '@Storefront/storefront/page/checkout/checkout-item-children.html.twig' %}
+
+{% block page_checkout_item_child_total_price %}
+    <div class="col-3 cart-item-child-total-price">
+    {% set hidePricesConfig = config('ASHideProductPrices') %}
+    {# {{dump(hidePricesConfig)}} #}
+    {% set showPrices = hidePricesConfig.active %}
+
+    {% if hidePricesConfig.config.active %}
+        {% if showPrices %}
+            {{ parent() }}
+        {% else %}
+            {{ nestedLineItem.quantity }}
+        {% endif %}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+        
+    </div>
+{% endblock %}

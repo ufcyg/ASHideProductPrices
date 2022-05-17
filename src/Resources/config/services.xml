@@ -15,7 +15,7 @@
         </service>
 
         <service id="ASHideProductPrices\Core\Content\ProductCustomergroupMappingDefinition">
-            <tag name="shopware.entity.definition" entity="as_product_bundle_mapping"/>
+            <tag name="shopware.entity.definition" entity="as_product_customergroup_mapping"/>
         </service>
 
         <service id="ASHideProductPrices\Extension\Content\Product\CustomerAssociationExtension">
