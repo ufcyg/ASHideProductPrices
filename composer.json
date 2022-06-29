@@ -2,11 +2,11 @@
   "name": "as/hide-product-prices",
   "description": "Show prices to specific customer groups",
   "type": "shopware-platform-plugin",
-  "version": "v3.0.1",
+  "version": "v3.0.2",
   "license": "proprietary",
   "authors": [
     {
-        "name": "SGS IT"
+      "name": "SGS IT"
     }
   ],
   "autoload": {
