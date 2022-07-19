@@ -24,5 +24,23 @@
         <service id="ASHideProductPrices\Extension\Checkout\Customer\Aggregate\CustomerGroup\ProductAssociationExtension">
             <tag name="shopware.entity.extension"/>
         </service>
+
+
+
+        <service id="ASHideProductPrices\Core\Checkout\Hide\Cart\HideCartCollector">
+        <argument type="service" id="SGSUtilities\Core\Utilities\SGSUtils" />
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+            <tag name="shopware.cart.collector" priority="-5000"/>
+        </service>
+        <service id="ASHideProductPrices\Core\Checkout\Hide\Cart\HideCartProcessor">
+        <argument type="service" id="Shopware\Core\Checkout\Cart\LineItemFactoryRegistry"/>
+        <argument type="service" id="Shopware\Core\Checkout\Cart\Price\QuantityPriceCalculator"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+            <tag name="shopware.cart.processor" priority="-5000"/>
+        </service>
     </services>
 </container>
