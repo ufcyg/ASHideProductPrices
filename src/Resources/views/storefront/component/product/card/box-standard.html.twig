@@ -1,85 +1,83 @@
 {% sw_extends '@Storefront/storefront/component/product/card/box-standard.html.twig' %}
 
 {% block component_product_box_info %}
-    <div class="product-info">
-        {% block component_product_box_rating %}
-            {% if shopware.config.core.listing.showReview %}
-                <div class="product-rating">
-                    {% if product.ratingAverage %}
-                        {% sw_include '@Storefront/storefront/component/review/rating.html.twig' with {
+	<div class="product-info">
+		{% block component_product_box_rating %}
+			{% if shopware.config.core.listing.showReview %}
+				<div class="product-rating">
+					{% if product.ratingAverage %}
+						{% sw_include '@Storefront/storefront/component/review/rating.html.twig' with {
                             points: product.ratingAverage,
                             style: 'text-primary'
                         } %}
-                    {% endif %}
-                </div>
-            {% endif %}
-        {% endblock %}
+					{% endif %}
+				</div>
+			{% endif %}
+		{% endblock %}
 
-        {% block component_product_box_name %}
-            <a href="{{ seoUrl('frontend.detail.page', {'productId': id}) }}"
-                class="product-name"
-                title="{{ name }}">
-                {{ name }}
-            </a>
-        {% endblock %}
+		{% block component_product_box_name %}
+			<a href="{{ seoUrl('frontend.detail.page', {'productId': id}) }}" class="product-name" title="{{ name }}">
+				{{ name }}
+			</a>
+		{% endblock %}
 
-        {% block component_product_box_variant_characteristics %}
-            <div class="product-variant-characteristics">
-                <div class="product-variant-characteristics-text">
-                    {% if not product.isGrouped %}
-                        {% for variation in product.variation %}
-                            {{ variation.group }}:
-                            <span class="product-variant-characteristics-option">
-                                {{ variation.option }}
-                            </span>
+		{% block component_product_box_variant_characteristics %}
+			<div class="product-variant-characteristics">
+				<div class="product-variant-characteristics-text">
+					{% if not product.isGrouped %}
+						{% for variation in product.variation %}
+							{{ variation.group }}:
+							<span class="product-variant-characteristics-option">
+								{{ variation.option }}
+							</span>
 
-                            {% if product.variation|last != variation %}
-                                {{ " | " }}
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}
-                </div>
-            </div>
-        {% endblock %}
+							{% if product.variation|last != variation %}
+								{{ " | " }}
+							{% endif %}
+						{% endfor %}
+					{% endif %}
+				</div>
+			</div>
+		{% endblock %}
 
-        {% block component_product_box_description %}
-            <div class="product-description">
-                {{ product.translated.description|striptags|raw }}
-            </div>
-        {% endblock %}
-        {% set hidePricesConfig = config('ASHideProductPrices') %}
-        {% set showPrices = false %}
-        {% set break = false %}
-        {% for customerGroupID in hidePricesConfig.config.allowedCustomerGroups %}
-            {% if not break %}
-                {% if (customerGroupID == context.currentCustomerGroup.id) %}
-                    {% set showPrices = true %}
-                    {% set break = true %}
-                {% endif %}
-            {% endif %}
-        {% endfor %}
-        
-         
-            
-        {% block component_product_box_price %}
-            {% if hidePricesConfig.config.active %}  
-                {% if showPrices %}  
-                    {% sw_include '@Storefront/storefront/component/product/card/price-unit.html.twig' %}
-                {% endif %}
-            {% else %}
-                {% sw_include '@Storefront/storefront/component/product/card/price-unit.html.twig' %}
-            {% endif %}
-        {% endblock %}
+		{% block component_product_box_description %}
+			<div class="product-description">
+				{{ product.translated.description|striptags|raw }}
+			</div>
+		{% endblock %}
+		{% set hidePricesConfig = config('ASHideProductPrices') %}
+		{% set showPrices = false %}
+		{% set break = false %}
+		{% for customerGroupID in hidePricesConfig.config.allowedCustomerGroups %}
+			{% if not break %}
+				{% if (customerGroupID == context.currentCustomerGroup.id) %}
+					{% set showPrices = true %}
+					{% set break = true %}
+				{% endif %}
+			{% endif %}
+		{% endfor %}
 
-       {% block component_product_box_action %}
-           {% sw_include '@Storefront/storefront/component/product/card/action.html.twig' %}
-            {# {% if hidePricesConfig.config.active %}
-                {% if showPrices %}  
-                    {% sw_include '@Storefront/storefront/component/product/card/action.html.twig' %}
-                {% endif %}
-            {% else %}
-                {% sw_include '@Storefront/storefront/component/product/card/action.html.twig' %}
-            {% endif %}#}
-        {% endblock %}
-    </div>
+
+		{% block component_product_box_price %}
+			{% if hidePricesConfig.config.active %}
+				{% if showPrices %}
+					{% sw_include '@Storefront/storefront/component/product/card/price-unit.html.twig' %}
+				{% endif %}
+			{% else %}
+				{% sw_include '@Storefront/storefront/component/product/card/price-unit.html.twig' %}
+			{% endif %}
+		{% endblock %}
+
+		{% block component_product_box_action %}
+			{% sw_include '@Storefront/storefront/component/product/card/action.html.twig' %}
+			{{dump()}}
+			{# {% if hidePricesConfig.config.active %}
+						                {% if showPrices %}  
+						                    {% sw_include '@Storefront/storefront/component/product/card/action.html.twig' %}
+						                {% endif %}
+						            {% else %}
+						                {% sw_include '@Storefront/storefront/component/product/card/action.html.twig' %}
+						            {% endif %}#}
+		{% endblock %}
+	</div>
 {% endblock %}
