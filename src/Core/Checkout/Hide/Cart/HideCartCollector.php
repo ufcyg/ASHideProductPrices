@@ -10,7 +10,6 @@ use Shopware\Core\Checkout\Cart\CartDataCollectorInterface;
 use Shopware\Core\Checkout\Cart\LineItem\CartDataCollection;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Psr\Container\ContainerInterface;
-use SGSUtilities\Core\Utilities\SGSUtils;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\LineItem\LineItemCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -23,14 +22,11 @@ class HideCartCollector implements CartDataCollectorInterface
 
     public const TYPE = 'product';
     public const DATA_KEY = 'product';
-    /** @var SGSUtils $utils */
-    private $utils;
     /** @var ContainerInterface */
     protected $container;
 
-    public function __construct(SGSUtils $utils)
+    public function __construct()
     {
-        $this->utils = $utils;
     }
 
 
