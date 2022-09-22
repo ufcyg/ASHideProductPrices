@@ -70,15 +70,15 @@
 
 		{% block component_product_box_action %}
 			{% sw_include '@Storefront/storefront/component/product/card/action.html.twig' %}
-			{# {{dump()}} #}
-			{{context.currentCustomerGroup.name}}
+		{# {{dump()}} #}
+			{# {{context.currentCustomerGroup.name}} #}
 			{# {% if hidePricesConfig.config.active %}
-															            {% if showPrices %}  
-															                {% sw_include '@Storefront/storefront/component/product/card/action.html.twig' %}
-															            {% endif %}
-															        {% else %}
-															            {% sw_include '@Storefront/storefront/component/product/card/action.html.twig' %}
-															        {% endif %}#}
+						{% if showPrices %}  
+							{% sw_include '@Storefront/storefront/component/product/card/action.html.twig' %}
+						{% endif %}
+					{% else %}
+						{% sw_include '@Storefront/storefront/component/product/card/action.html.twig' %}
+					{% endif %}#}
 		{% endblock %}
 	</div>
 {% endblock %}
