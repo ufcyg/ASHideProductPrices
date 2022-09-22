@@ -67,7 +67,13 @@ class ProductListingSubscriber implements EventSubscriberInterface
 
     public function addFilter(ProductListingCollectFilterEvent $event): void
     {
-        $this->invalidateListings();
+        $result = $this->container->get('product.repository')->search(new Criteria(), Context::createDefaultContext());
+
+        foreach ($result as $id => $product) {
+            $productIds[] = $id;
+        }
+        $this->invalidateProductIds($productIds);
+        $this->invalidateListings($productIds);
         // fetch existing filters
         $filters = $event->getFilters();
         //fetch customer
@@ -139,13 +145,9 @@ class ProductListingSubscriber implements EventSubscriberInterface
         $filters->add($filter);
     }
 
-    private function invalidateListings(): void
+    private function invalidateListings($productIds): void
     {
-        $result = $this->container->get('product.repository')->search(new Criteria(), Context::createDefaultContext());
 
-        foreach ($result as $id => $product) {
-            $productIds[] = $id;
-        }
         // invalidates product listings which are based on the product category assignment
         $this->cacheInvalidator->invalidate(
             array_map([CachedProductListingRoute::class, 'buildName'], $this->getProductCategoryIds($productIds))
@@ -161,6 +163,13 @@ class ProductListingSubscriber implements EventSubscriberInterface
              AND category_version_id = :version',
             ['ids' => Uuid::fromHexToBytesList($ids), 'version' => Uuid::fromHexToBytes(Defaults::LIVE_VERSION)],
             ['ids' => Connection::PARAM_STR_ARRAY]
+        );
+    }
+    public function invalidateProductIds($productIds): void
+    {
+        // invalidates all routes which loads products in nested unknown objects, like cms listing elements or cross selling elements
+        $this->cacheInvalidator->invalidate(
+            array_map([EntityCacheKeyGenerator::class, 'buildProductTag'], $productIds)
         );
     }
 
