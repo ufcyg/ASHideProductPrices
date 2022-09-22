@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace ASHideProductPrices\Subscriber;
 
 use Psr\Container\ContainerInterface;
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\Defaults;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupCollection;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Content\Product\Events\ProductListingCollectFilterEvent;
@@ -139,7 +142,7 @@ class ProductListingSubscriber implements EventSubscriberInterface
     {
         $result = $this->container->get('product.repository')->search(new Criteria(), Context::createDefaultContext());
 
-        foreach($result as $id => $product){
+        foreach ($result as $id => $product) {
             $productIds[] = $id;
         }
         // invalidates product listings which are based on the product category assignment
