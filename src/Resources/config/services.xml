@@ -9,6 +9,8 @@
             <tag name="kernel.event_subscriber"/>
             <tag name="shopware.event_subscriber"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+            <argument type="service" id="Shopware\Core\Framework\Adapter\Cache\CacheInvalidator" />
+            <argument type="service" id="Doctrine\DBAL\Connection" />
             <call method="setContainer">
                 <argument type="service" id="service_container" />
             </call>

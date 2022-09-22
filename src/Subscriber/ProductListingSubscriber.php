@@ -18,6 +18,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Shopware\Core\Framework\Adapter\Cache\CacheInvalidator;
+use Doctrine\DBAL\Connection;
 
 class ProductListingSubscriber implements EventSubscriberInterface
 {
@@ -26,10 +28,17 @@ class ProductListingSubscriber implements EventSubscriberInterface
     /** @var ContainerInterface $container */
     protected $container;
 
+    private CacheInvalidator $cacheInvalidator;
+    private Connection $connection;
+
     public function __construct(
-        SystemConfigService $systemConfigService
+        SystemConfigService $systemConfigService,
+        CacheInvalidator $cacheInvalidator,
+        Connection $connection
     ) {
         $this->systemConfigService = $systemConfigService;
+        $this->cacheInvalidator = $cacheInvalidator;
+        $this->connection = $connection;
     }
 
     /**
@@ -54,7 +63,7 @@ class ProductListingSubscriber implements EventSubscriberInterface
 
     public function addFilter(ProductListingCollectFilterEvent $event): void
     {
-
+        $this->invalidateListings();
         // fetch existing filters
         $filters = $event->getFilters();
         //fetch customer
@@ -124,6 +133,31 @@ class ProductListingSubscriber implements EventSubscriberInterface
 
         // Add your custom filter
         $filters->add($filter);
+    }
+
+    private function invalidateListings(): void
+    {
+        $result = $this->container->get('product.repository')->search(new Criteria(), Context::createDefaultContext());
+
+        foreach($result as $id => $product){
+            $productIds[] = $id;
+        }
+        // invalidates product listings which are based on the product category assignment
+        $this->cacheInvalidator->invalidate(
+            array_map([CachedProductListingRoute::class, 'buildName'], $this->getProductCategoryIds($productIds))
+        );
+    }
+    private function getProductCategoryIds(array $ids): array
+    {
+        return $this->connection->fetchFirstColumn(
+            'SELECT DISTINCT LOWER(HEX(category_id)) as category_id
+             FROM product_category_tree
+             WHERE product_id IN (:ids)
+             AND product_version_id = :version
+             AND category_version_id = :version',
+            ['ids' => Uuid::fromHexToBytesList($ids), 'version' => Uuid::fromHexToBytes(Defaults::LIVE_VERSION)],
+            ['ids' => Connection::PARAM_STR_ARRAY]
+        );
     }
 
     private function noDisplayFilter(): Filter
