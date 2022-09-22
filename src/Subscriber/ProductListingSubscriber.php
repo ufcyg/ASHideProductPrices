@@ -23,6 +23,7 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Shopware\Core\Framework\Adapter\Cache\CacheInvalidator;
 use Doctrine\DBAL\Connection;
+use Shopware\Core\Content\Product\SalesChannel\Listing\CachedProductListingRoute;
 
 class ProductListingSubscriber implements EventSubscriberInterface
 {
